@@ -7,24 +7,24 @@ const productManager = new ProductManager(ruta);
 
 app.use(express.urlencoded({ extended: true }));
 app.get("/products", async (req, resp) => {
-  const productos = await productManager.getProducts();
-  resp.send(productos);
-});
-
-app.get("/", async (req, resp) => {
   const limite = req.query.limit;
-  const productos = await productManager.getProducts();
-  let respuesta;
-  if (limite > productos.length || limite < 0) {
-    respuesta = "Ingrese un limite de productos valido";
+  if (limite != null) {
+    const productos = await productManager.getProducts();
+    let respuesta;
+    if (limite > productos.length || limite < 0) {
+      respuesta = "Ingrese un limite de productos valido";
+    } else {
+      productos.length = limite;
+      respuesta = productos;
+    }
+    resp.send(respuesta);
   } else {
-    productos.length = limite;
-    respuesta = productos;
+    const productos = await productManager.getProducts();
+    resp.send(productos);
   }
-  resp.send(respuesta);
 });
 
-app.get("/producto/:idProduto", async (req, resp) => {
+app.get("/products/:idProduto", async (req, resp) => {
   let idProduto = req.params.idProduto;
 
   let producto = await productManager.getProductById(idProduto);
